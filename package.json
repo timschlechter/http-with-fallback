@@ -1,0 +1,25 @@
+{
+  "name": "http-with-fallback",
+  "title": "$http with fallback",
+  "version": "0.0.1",
+  "description": "AngularJS $http-compatible factory which provides a fallback to the last successful response for failing GET requests",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/timschlechter/http-with-fallback.git"
+  },
+  "author": "Tim Schlechter",
+  "license": "MIT",
+  "homepage": "https://github.com/TimSchlechter/http-with-fallback",
+  "download": "https://github.com/TimSchlechter/http-with-fallback/src/http-with-fallback.js",
+  "keywords": [
+    "$http",
+    "angular",
+    "factory"
+  ],
+  "readmeFilename": "README.md",
+  "devDependencies": {
+    "grunt": "~0.4.1",
+    "grunt-bower-task": "~0.3.1"
+  },
+  "banner": "/*\n * <%= pkg.name %> v<%= pkg.version %> by <%= pkg.author %>\n * <%= pkg.license.url %>\n */\n"
+}

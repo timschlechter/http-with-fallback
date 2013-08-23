@@ -1,10 +1,10 @@
-AngularJS [$http](http://docs.angularjs.org/api/ng.$http) compatible factory which provides a fallback to the last successful response for failing GET requests
+AngularJS [$http](http://docs.angularjs.org/api/ng.$http) compatible factory which provides a fallback to the last successful response for failing GET requests.
 
 ## The goal
-Always terug status 20x on HTTP GET request
+Always recieve status 20x on HTTP GET request.
 
-## When to use this
-AngularJS applications with offline support, like PhoneGap apps
+## When you might use this
+When you're building an AngularJS applications with offline support, like a PhoneGap app for example.
 
 ## When *NOT* to use this
 To perform HTTP GET requests which require authentication/autorisation. Seriously, don't...

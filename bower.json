@@ -1,0 +1,28 @@
+{
+  "name": "http-with-fallback",
+  "version": "0.0.1",
+  "authors": [
+    "Tim Schlechter <timschlechter@gmail.com>"
+  ],
+  "main": "src/http-with-fallback.js",
+  "keywords": [
+    "angular"
+  ],
+  "license": "MIT",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests",
+    "lib"
+  ],
+  "dependencies": {
+  },
+  "devDependencies": {
+    "angular": "~1.0.7",
+    "angular-mocks": "~1.0.7",
+    "jasmine.async": "~0.1.0"
+  }
+}
