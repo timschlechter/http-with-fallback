@@ -9,6 +9,9 @@ When you're building an AngularJS application with offline support, like a Phone
 ## When *NOT* to use this
 To perform HTTP GET requests which require authentication/autorisation. Seriously, don't...
 
+## What about the browser cache?
+What about all those JSON services responding with no-caching headers?
+
 ## How it works
 Whenever a GET request performed by http-with-fallback responds with:
 - status 200: the response is stored in the local storage
