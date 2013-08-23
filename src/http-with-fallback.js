@@ -13,7 +13,7 @@
       CachingHttp.prototype = $http;
       CachingHttp.prototype.constructor = CachingHttp;
 
-      var cachingHttp = new CachingHttp();
+      var cachingHttp = new CachingHttp(),
           localStorage = global.localStorage;
 
       /**
