@@ -10,39 +10,84 @@ describe("http-with-fallback", function() {
       httpWithFallback = $injector.get('httpWithFallback');
       $httpBackend = $injector.get('$httpBackend');
     });
+
+    for (var key in localStorage) {
+      localStorage.removeItem(key);
+    }
   });
 
-  async.it("GET returning status 500 after a 200 should resolve successful with last recieved data", function(done) {
-    // arrange: $httpBackend: first request returns 200, seconde request return 500
-    var reqCount = 0,
-        responseData = { "key": "value" };    
-    $httpBackend.when('GET', '/test.json').respond(
-      function(method, url, data, headers) {
-        if (reqCount++ === 0) {
-          return [200, responseData, {}];
-        } else {
-          return [500, '', {}];
-        }
-      });
+  /**
+   * Helper function to register test cases
+   */
+  function createTestcase(description, testcase) {
+    var SOME_URL = '/some';
+    function performRequests(count, data, status, headers, config) {
+      if (count === 0)
+        return { data: data, status: status, headers: headers, config: config };
 
-    // act: perform two GET requests to the same url
-    var req = httpWithFallback.get('/test.json')
-          .then(function() {
-            return httpWithFallback.get('/test.json');
-          });
+      return httpWithFallback.get(SOME_URL)
+              .success(function(data, status, headers, config) {
+                return performRequests(count-1, data, status, headers, config);
+              })
+              .error(function(data, status, headers, config) {
+                return performRequests(count-1, data, status, headers, config);
+              });
+    }
 
-    // assert: promise should resolve successful with data
-    req.then(
-      function(response) {
-        expect(response.data).toEqual(responseData);
-        done();  
-      },
-      function(error) {
-        expect('this line of code').not.toBe('hit');
-      }); 
+    async.it(description, function(done) {
+      // arrange $httpBackend
+      var requestCount = 0;
 
-    // Flush pending requests, making the req-promise resolve
-    $httpBackend.flush();
+      $httpBackend.when('GET', SOME_URL).respond(
+        function(method, url, data, headers) {
+          var response = testcase.responses[requestCount];
+          requestCount++;
+          return [response.status, response.data, response.headers];
+        });
+      
+      var act = performRequests(testcase.responses.length);
+
+      // Assert
+      if (testcase.success) {
+        act.success(testcase.success);
+      } else {
+        act.success(function() { expect("success").toBe("not invoked"); });
+      }
+
+      if (testcase.error) {
+        act.error(testcase.error);
+      } else {
+        act.error(function() { expect("error").toBe("not invoked"); });
+      }
+
+      act.then(done, done);
+
+      // Flush pending requests, making the req-promise resolve
+      $httpBackend.flush();      
+    });
+  }  
+
+  describe("default usage", function() {
+
+    createTestcase("GET returning status 500 reject with error response",  { 
+      responses: [
+        { status: 500 }
+      ],
+      error: function(data, status) {
+        expect(status).toEqual(500);
+      }
+    });
+
+    createTestcase("GET returning status 500 after a 200 should resolve successful with last recieved data", {
+      responses: [
+        { status: 200, data: { "key": "value" } }, 
+        { status: 500                           }
+      ],
+      success: function(data) {
+        expect(data).toEqual({ "key": "value" });
+      }
+    });
+
     
-  });
-})
+  })
+});
