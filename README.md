@@ -3,8 +3,8 @@ AngularJS [$http](http://docs.angularjs.org/api/ng.$http) compatible factory whi
 ## The goal
 Always recieve status 20x on HTTP GET request.
 
-## When you might use this
-When you're building an AngularJS applications with offline support, like a PhoneGap app for example.
+## When you might want to use this
+When you're building an AngularJS application with offline support, like a PhoneGap app for example.
 
 ## When *NOT* to use this
 To perform HTTP GET requests which require authentication/autorisation. Seriously, don't...
