@@ -29,5 +29,5 @@ Whenever a GET request performed by http-with-fallback responds with:
 If the browser has no local storage support, every get() is just passed on to [$http](http://docs.angularjs.org/api/ng.$http).
 
 ### Why?
-I got inspired by [this podcast](http://javascriptjabber.com/069-jsj-the-application-cache-with-jake-archibald/) in which [Jake Archibald](http://jakearchibald.com/) tells about the Application Cache and the problems he has with it. One thing I particularly didn't like is the cache-first approach.
+I got inspired by [this podcast](http://javascriptjabber.com/069-jsj-the-application-cache-with-jake-archibald/) in which [Jake Archibald](http://jakearchibald.com/) tells about the Application Cache and the problems he has with it. One thing I particularly don't like is the cache-first approach.
 http-with-fallback is an experiment to see if I can deal with the offline scenario in a convenient way in AngularJS applications by wrapping some stuff around [$http](http://docs.angularjs.org/api/ng.$http).
