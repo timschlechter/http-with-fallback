@@ -11,7 +11,7 @@ Default usage:
 Config options:
 <pre>httpWithFallback.get('/someurl.json', { dontStore: true, fallbackData: { 'key': 'value' } });</pre>
 
-- *dontStore*: when true, don't store succesful 200 requests in the local storage for future fallback (default: false)
+- *dontStore*: when true, don't store succesful 200 OK responses in the local storage for future fallback (default: false)
 - *fallbackData*: whenever a GET request fails, and there is no stored response, the promise will resolve with this data. When everything fails and there is no fallbackData given, the promise will reject with the original response. fallbackData data will never be stored in the local storage as a future fallback response.
 
 ### When you might want to use this
