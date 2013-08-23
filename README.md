@@ -16,9 +16,6 @@ Config options:
 ### When you might want to use this
 When you're building an AngularJS application with offline support, like a PhoneGap app for example.
 
-### When *NOT* to use this
-To perform HTTP GET requests which require authentication/autorisation. Seriously, don't...
-
 ### What about the browser cache?
 What about all those JSON services responding with no-caching headers?
 
