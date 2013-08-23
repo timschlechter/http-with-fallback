@@ -23,7 +23,7 @@ What about all those JSON services responding with no-caching headers?
 Whenever a GET request performed by http-with-fallback responds with:
 - status 200: the response is stored in the local storage
 - status 20x, 30x: just resolve the promise with the given response
-- status 40x, 50x: it looks for a successful response in the local storage. When found, resolve the promise with this response 
+- status 40x, 50x: it looks for a successful response in the local storage. When found, resolve the promise with this response. If none found, and the _fallbackData_ config value is set, resolve the promise with a response containing this data.
 
 If the browser has no local storage support, every get() is just passed on to [$http](http://docs.angularjs.org/api/ng.$http).
 
