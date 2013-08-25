@@ -18,6 +18,7 @@
   ],
   "readmeFilename": "README.md",
   "devDependencies": {
+    "grunt": "~0.4.1",
     "grunt-cli": "~0.1.9",
     "grunt-bower-task": "~0.3.1"
   },
