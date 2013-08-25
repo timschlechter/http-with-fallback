@@ -6,6 +6,7 @@ before_script:
   - export DISPLAY=:99.0
   - sh -e /etc/init.d/xvfb start
   - npm install -g karma
+  - grunt
 
 script:
   - karma start --no-auto-watch --single-run --reporters dots --browsers Firefox
