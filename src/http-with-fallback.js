@@ -9,17 +9,17 @@
         return $http;
 
       // Constructor function, using $http as prototype
-      function CachingHttp() { }
-      CachingHttp.prototype = $http;
-      CachingHttp.prototype.constructor = CachingHttp;
+      function HttpWithFallback() { }
+      HttpWithFallback.prototype = $http;
+      HttpWithFallback.prototype.constructor = HttpWithFallback;
 
-      var cachingHttp = new CachingHttp(),
+      var httpWithFallback = new HttpWithFallback(),
           localStorage = global.localStorage;
 
       /**
        * Override $http.get to catch the promise.error
        */
-      cachingHttp.get = function(url, config) {
+      httpWithFallback.get = function(url, config) {
         var deferred = $q.defer(),
             promise = deferred.promise;
 
@@ -47,14 +47,13 @@
 
                   // Store in local storage when status === 200
                   if (response.status === 200) {
-                    var data = {
-                      data: response.data,
-                      status: response.status,
-                      config: response.config,
-                      headers: response.headers(),
-                      isFallback: true
-                    };
-                    localStorage.setItem(url, JSON.stringify(data));
+                    localStorage.setItem(url, JSON.stringify({
+                                                data: response.data,
+                                                status: response.status,
+                                                config: response.config,
+                                                headers: response.headers(),
+                                                isFallback: true
+                                              }));
                   }
                 },
                 /* error */
@@ -78,6 +77,6 @@
         return promise;
       };
 
-      return cachingHttp;
+      return httpWithFallback;
     }]);
 }(this));
