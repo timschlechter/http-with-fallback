@@ -45,7 +45,9 @@ _or_
                 })</pre>
 
 ### Build
-<pre>grunt</pre>
+<pre>npm install
+grunt</pre>
+
 ### Test
 _With Karma:_
 <pre>karma start --browser Chrome</pre>
