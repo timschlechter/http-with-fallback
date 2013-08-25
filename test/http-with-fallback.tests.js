@@ -35,10 +35,12 @@ describe("http-with-fallback", function() {
     }
     // When multiple error callbacks are defined, create a single testcase for each of them
     if (testcase.error && !_.isFunction(testcase.error)) {
-      _.each(testcase.error, function(value, key) {
-        var clone = _.cloneDeep(testcase);
-        clone.error = value;
-        createTestcase(key, clone)
+      describe(description, function() {
+        _.each(testcase.error, function(value, key) {
+          var clone = _.cloneDeep(testcase);
+          clone.error = value;
+          createTestcase(key, clone)
+        });
       });
       return;
     }
@@ -100,29 +102,33 @@ describe("http-with-fallback", function() {
 
   describe("default usage", function() {
 
-    var SOME_JSON_DATA = { "key": "value" },
+    var SOME_HTML_DATA = "<div>some text</div>",
+        SOME_JSON_DATA = { "key": "value" },
         SOME_HEADERS = { "header": "value"};
 
-    createTestcase("GET returning status 500 should reject",  { 
+    createTestcase("GET returning status 500 (Internal Server Error)",  { 
       responses: [
         { status: 500 }
       ],
-      error: function(data, status) {
-        expect(status).toEqual(500);
+      error: {
+        "should reject":
+          function(data, status) {
+            expect(status).toEqual(500);
+          }
       }
     });
 
-    createTestcase("GET returning status 500 after a 200 which returned JSON", {
+    createTestcase("GET returning status 500 (Internal Server Error) after a 200 (OK) which returned JSON", {
       responses: [
         { status: 200, data: SOME_JSON_DATA, headers: SOME_HEADERS }, 
         { status: 500                           }
       ],
       success : {
-        "should resolve successful with status 200": 
+        "should resolve successful with status 200 (OK)": 
           function(data, status) {
             expect(status).toBe(200);
           },
-        "should resolve successful with object from the first request": 
+        "should resolve successful with data as object from the first request": 
           function(data) {
             expect(data).toEqual(SOME_JSON_DATA);
           },
@@ -135,6 +141,32 @@ describe("http-with-fallback", function() {
             expect(isFallback).toBe(true);
           }        
       }
-    });    
+    });  
+
+    createTestcase("GET returning status 500 (Internal Server Error) after a 200 (OK) which returned a HTML string", {
+      responses: [
+        { status: 200, data: SOME_HTML_DATA }, 
+        { status: 500                       }
+      ],
+      success : {
+        "should resolve successful with data as string from the first request": 
+          function(data) {
+            expect(data).toEqual(SOME_HTML_DATA);
+          }     
+      }
+    }); 
+
+    createTestcase("GET returning status 204 (No Content) after a 200 (OK)", {
+      responses: [
+        { status: 200, data: SOME_HTML_DATA }, 
+        { status: 204                       }
+      ],
+      success : {
+        "should resolve successful with status 204 (No Content)": 
+          function(data, status) {
+            expect(status).toBe(204);
+          },    
+      }
+    });   
   })
 });
