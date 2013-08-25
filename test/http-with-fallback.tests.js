@@ -25,10 +25,12 @@ describe("http-with-fallback", function() {
     // When multiple success callbacks are defined, create a single testcase for each of them
     if (testcase.success && !_.isFunction(testcase.success)) {
       describe(description, function() {
-        _.each(testcase.success, function(value, key) {
-          var clone = _.cloneDeep(testcase);
-          clone.success = value;
-          createTestcase(key, clone)
+        describe("should resolve", function() {
+          _.each(testcase.success, function(value, key) {
+            var clone = _.cloneDeep(testcase);
+            clone.success = value;
+            createTestcase(key, clone)
+          });
         });
       });
       return;
@@ -36,10 +38,12 @@ describe("http-with-fallback", function() {
     // When multiple error callbacks are defined, create a single testcase for each of them
     if (testcase.error && !_.isFunction(testcase.error)) {
       describe(description, function() {
-        _.each(testcase.error, function(value, key) {
-          var clone = _.cloneDeep(testcase);
-          clone.error = value;
-          createTestcase(key, clone)
+        describe("should reject", function() {
+          _.each(testcase.error, function(value, key) {
+            var clone = _.cloneDeep(testcase);
+            clone.error = value;
+            createTestcase(key, clone)
+          });
         });
       });
       return;
@@ -100,25 +104,25 @@ describe("http-with-fallback", function() {
     });
   }  
 
-  describe("default usage", function() {
+  var SOME_HTML_DATA = "<div>some text</div>",
+      SOME_JSON_DATA = { "key": "value" },
+      SOME_HEADERS = { "header": "value"};
 
-    var SOME_HTML_DATA = "<div>some text</div>",
-        SOME_JSON_DATA = { "key": "value" },
-        SOME_HEADERS = { "header": "value"};
 
-    createTestcase("GET returning status 500 (Internal Server Error)",  { 
+  describe("GET returning status 500 (Internal Server Error)", function() {
+    createTestcase("",  { 
       responses: [
         { status: 500 }
       ],
       error: {
-        "should reject":
+        "with status 500 (Internal Server Error)":
           function(data, status) {
             expect(status).toEqual(500);
           }
       }
     });
 
-    createTestcase("GET returning status 500 (Internal Server Error) with fallback in config",  {
+    createTestcase("with fallback in config",  {
       config: {
         fallback: SOME_JSON_DATA
       },
@@ -126,74 +130,76 @@ describe("http-with-fallback", function() {
         { status: 500, headers: SOME_HEADERS }
       ],
       success : {
-        "should resolve successful with status 200 (OK)": 
+        "with status 200 (OK)": 
           function(data, status) {
             expect(status).toBe(200);
           },
-        "should resolve successful with data fallback data":
+        "with data fallback data":
           function(data) {
             expect(data).toEqual(SOME_JSON_DATA);
           },
-        "should resolve successful with headers of the error response": 
+        "with headers of the error response": 
           function(data, status, headers) {
             expect(headers()).toEqual(SOME_HEADERS);
           },
-        "should resolve successful with response.isFallback should be true":
+        "with response.isFallback should be true":
           function(data, status, headers, config, isFallback) {
             expect(isFallback).toBe(true);
           }        
       }
     });
 
-    createTestcase("GET returning status 500 (Internal Server Error) after a 200 (OK) which returned JSON", {
-      responses: [
-        { status: 200, data: SOME_JSON_DATA, headers: SOME_HEADERS }, 
-        { status: 500                           }
-      ],
-      success : {
-        "should resolve successful with status 200 (OK)": 
-          function(data, status) {
-            expect(status).toBe(200);
-          },
-        "should resolve successful with data as object from the first request": 
-          function(data) {
-            expect(data).toEqual(SOME_JSON_DATA);
-          },
-        "should resolve successful with headers of the first request": 
-          function(data, status, headers) {
-            expect(headers()).toEqual(SOME_HEADERS);
-          },
-        "should resolve successful with response.isFallback should be true":
-          function(data, status, headers, config, isFallback) {
-            expect(isFallback).toBe(true);
-          }        
-      }
-    });  
+    describe("after a 200 (OK)", function() {
+      createTestcase("which returned JSON", {
+        responses: [
+          { status: 200, data: SOME_JSON_DATA, headers: SOME_HEADERS }, 
+          { status: 500                           }
+        ],
+        success : {
+          "with status 200 (OK)": 
+            function(data, status) {
+              expect(status).toBe(200);
+            },
+          "with JSON object data from the first request": 
+            function(data) {
+              expect(data).toEqual(SOME_JSON_DATA);
+            },
+          "with headers of the first request": 
+            function(data, status, headers) {
+              expect(headers()).toEqual(SOME_HEADERS);
+            },
+          "with response.isFallback should be true":
+            function(data, status, headers, config, isFallback) {
+              expect(isFallback).toBe(true);
+            }        
+        }
+      });  
 
-    createTestcase("GET returning status 500 (Internal Server Error) after a 200 (OK) which returned a HTML string", {
-      responses: [
-        { status: 200, data: SOME_HTML_DATA }, 
-        { status: 500                       }
-      ],
-      success : {
-        "should resolve successful with data as string from the first request": 
-          function(data) {
-            expect(data).toEqual(SOME_HTML_DATA);
-          }     
-      }
-    }); 
+      createTestcase("which returned a HTML string", {
+        responses: [
+          { status: 200, data: SOME_HTML_DATA }, 
+          { status: 500                       }
+        ],
+        success : {
+          "with HTML string data from the first request": 
+            function(data) {
+              expect(data).toEqual(SOME_HTML_DATA);
+            }     
+        }
+      });
+    });
+  });
 
-    createTestcase("GET returning status 204 (No Content) after a 200 (OK)", {
-      responses: [
-        { status: 200, data: SOME_HTML_DATA }, 
-        { status: 204                       }
-      ],
-      success : {
-        "should resolve successful with status 204 (No Content)": 
-          function(data, status) {
-            expect(status).toBe(204);
-          },    
-      }
-    });   
-  })
+  createTestcase("GET returning status 204 (No Content) after a 200 (OK)", {
+    responses: [
+      { status: 200, data: SOME_HTML_DATA }, 
+      { status: 204                       }
+    ],
+    success : {
+      "with status 204 (No Content)": 
+        function(data, status) {
+          expect(status).toBe(204);
+        },    
+    }
+  });
 });

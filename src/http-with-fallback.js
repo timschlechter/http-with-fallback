@@ -3,7 +3,6 @@
 
   angular.module('http-with-fallback', [])
     .factory('httpWithFallback', ['$http', '$q', function($http, $q) {
-
       // Clients without local storage will just use $http
       if (!global.localStorage)
         return $http;
