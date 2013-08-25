@@ -100,7 +100,10 @@ describe("http-with-fallback", function() {
 
   describe("default usage", function() {
 
-    createTestcase("GET returning status 500 reject with error response",  { 
+    var SOME_JSON_DATA = { "key": "value" },
+        SOME_HEADERS = { "header": "value"};
+
+    createTestcase("GET returning status 500 should reject",  { 
       responses: [
         { status: 500 }
       ],
@@ -109,18 +112,25 @@ describe("http-with-fallback", function() {
       }
     });
 
-    createTestcase("GET returning status 500 after a 200", {
+    createTestcase("GET returning status 500 after a 200 which returned JSON", {
       responses: [
-        { status: 200, data: { "key": "value" } }, 
+        { status: 200, data: SOME_JSON_DATA, headers: SOME_HEADERS }, 
         { status: 500                           }
       ],
       success : {
-        "should resolve successful with data from the first 200 request": 
-          function(data) {
-
-            expect(data).toEqual({ "key": "value" });
+        "should resolve successful with status 200": 
+          function(data, status) {
+            expect(status).toBe(200);
           },
-        "response.isFallback should be true":
+        "should resolve successful with object from the first request": 
+          function(data) {
+            expect(data).toEqual(SOME_JSON_DATA);
+          },
+        "should resolve successful with headers of the first request": 
+          function(data, status, headers) {
+            expect(headers()).toEqual(SOME_HEADERS);
+          },
+        "should resolve successful with response.isFallback should be true":
           function(data, status, headers, config, isFallback) {
             expect(isFallback).toBe(true);
           }        

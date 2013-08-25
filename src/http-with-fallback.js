@@ -47,38 +47,31 @@
 
                   // Store in local storage when status === 200
                   if (response.status === 200) {
-                    var data = response.data;
-                    if (typeof data === "object")
-                      data = JSON.stringify(response.data);
-
-                    localStorage.setItem(url, data);
+                    var data = {
+                      data: response.data,
+                      status: response.status,
+                      config: response.config,
+                      headers: response.headers(),
+                      isFallback: true
+                    };
+                    localStorage.setItem(url, JSON.stringify(data));
                   }
                 },
                 /* error */
                 function(response) {
                   // Try to retrieve from local storage
-                  var cachedData = localStorage.getItem(url);
-                  if (!cachedData) {
+                  var storedResponse = localStorage.getItem(url);
+                  if (!storedResponse) {
                     // Not in local storage, resolve with original error response
-                    deferred.reject(response)
+                    deferred.reject(response);
                     return;
                   }
 
-                  // parse as JSON
-                  if (/^[\],:{}\s]*$/.test(cachedData.replace(/\\["\\\/bfnrtu]/g, '@')
-                                                     .replace(/"[^"\\\n\r]*"|true|false|null|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?/g, ']')
-                                                     .replace(/(?:^|:|,)(?:\s*\[)+/g, ''))) {
-                    cachedData = JSON.parse(cachedData);
-                  }
-
                   // Data was successfully retrieved from local storage, resolve with status 200
-                  deferred.resolve({
-                    data: cachedData,
-                    status: 200,
-                    headers: undefined, /* todo: include headers from last successfull */
-                    config: config,
-                    isFallback: true
-                  });
+                  storedResponse = JSON.parse(storedResponse);
+                  var headers = storedResponse.headers;
+                  storedResponse.headers = function() { return headers; };
+                  deferred.resolve(storedResponse);
                 }
         );
 
