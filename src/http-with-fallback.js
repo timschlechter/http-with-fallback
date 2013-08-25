@@ -26,7 +26,7 @@
         // Decorate promise with success and error functions to be compatible with the promise returned by $http.get
         promise.success = function(fn) {
           promise.then(function(response) {
-            fn(response.data, response.status, response.headers, config);
+            fn(response.data, response.status, response.headers, config, response.isFallback);
           });
           return promise;
         };
@@ -74,7 +74,10 @@
                   // Data was successfully retrieved from local storage, resolve with status 200
                   deferred.resolve({
                     data: cachedData,
-                    status: 200
+                    status: 200,
+                    headers: undefined, /* todo: include headers from last successfull */
+                    config: config,
+                    isFallback: true
                   });
                 }
         );
