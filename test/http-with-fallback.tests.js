@@ -57,7 +57,7 @@ describe("http-with-fallback", function() {
         return;
       }
 
-      return httpWithFallback.get(SOME_URL)
+      return httpWithFallback.get(SOME_URL, testcase.config)
               .then(
                 function(response) { return performRequests(count-1, deferred, response); },
                 function(response) { return performRequests(count-1, deferred, response); }
@@ -115,6 +115,33 @@ describe("http-with-fallback", function() {
           function(data, status) {
             expect(status).toEqual(500);
           }
+      }
+    });
+
+    createTestcase("GET returning status 500 (Internal Server Error) with fallback in config",  {
+      config: {
+        fallback: SOME_JSON_DATA
+      },
+      responses: [
+        { status: 500, headers: SOME_HEADERS }
+      ],
+      success : {
+        "should resolve successful with status 200 (OK)": 
+          function(data, status) {
+            expect(status).toBe(200);
+          },
+        "should resolve successful with data fallback data":
+          function(data) {
+            expect(data).toEqual(SOME_JSON_DATA);
+          },
+        "should resolve successful with headers of the error response": 
+          function(data, status, headers) {
+            expect(headers()).toEqual(SOME_HEADERS);
+          },
+        "should resolve successful with response.isFallback should be true":
+          function(data, status, headers, config, isFallback) {
+            expect(isFallback).toBe(true);
+          }        
       }
     });
 

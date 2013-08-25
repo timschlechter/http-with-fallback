@@ -60,17 +60,29 @@
                 function(response) {
                   // Try to retrieve from local storage
                   var storedResponse = localStorage.getItem(url);
-                  if (!storedResponse) {
-                    // Not in local storage, resolve with original error response
-                    deferred.reject(response);
+                  if (storedResponse) {
+                    // Data was successfully retrieved from local storage, resolve with status 200
+                    storedResponse = JSON.parse(storedResponse);
+                    var headers = storedResponse.headers;
+                    storedResponse.headers = function() { return headers; };
+                    deferred.resolve(storedResponse);
                     return;
                   }
 
-                  // Data was successfully retrieved from local storage, resolve with status 200
-                  storedResponse = JSON.parse(storedResponse);
-                  var headers = storedResponse.headers;
-                  storedResponse.headers = function() { return headers; };
-                  deferred.resolve(storedResponse);
+                  // Try config.fallback
+                  if (response.config.fallback) {
+                    deferred.resolve({
+                      data: config.fallback,
+                      status: 200,
+                      headers: response.headers,
+                      config: response.config,
+                      isFallback: true
+                    });
+                    return;
+                  }
+
+                  // Reject with original error response
+                  deferred.reject(response);
                 }
         );
 
