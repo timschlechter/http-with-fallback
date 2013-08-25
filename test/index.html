@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Jasmine Test Runner</title>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+    <link rel="stylesheet" href="../lib/jasmine/lib/jasmine-core/jasmine.css" />
+    <script type="text/javascript" src="../lib/jasmine/lib/jasmine-core/jasmine.js"></script>
+    <script type="text/javascript" src="../lib/jasmine/lib/jasmine-core/jasmine-html.js"></script>
+    <script type="text/javascript" src="../lib/jasmine.async/lib/jasmine.async.js"></script>
+    <script type="text/javascript" src="../lib/angular/angular.js"></script>
+    <script type="text/javascript" src="../lib/angular-mocks/angular-mocks.js"></script>
+    <script type="text/javascript" src="../lib/lodash/lodash.compat.js"></script>
+
+    <script type="text/javascript" src="../src/http-with-fallback.js"></script>
+    <script type="text/javascript" src="http-with-fallback.tests.js"></script>
+  </head>
+  <body>
+    <script>
+    var jasmineEnv = jasmine.getEnv();
+    jasmineEnv.updateInterval = 1000;
+
+    var htmlReporter = new jasmine.HtmlReporter();
+
+    jasmineEnv.addReporter(htmlReporter);
+
+    jasmineEnv.specFilter = function(spec) {
+      return htmlReporter.specFilter(spec);
+    };
+
+    jasmineEnv.execute();
+    </script>
+  </body>
+</html>
