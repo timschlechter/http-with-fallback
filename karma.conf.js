@@ -12,6 +12,7 @@ module.exports = function(config) {
       'lib/angular/angular.js',
       'lib/angular-mocks/angular-mocks.js',
       'lib/jasmine.async/lib/jasmine.async.min.js',
+      'lib/lodash/lodash.compat.js',
       'src/*.js',
       'test/**/*.tests.js'
     ],
