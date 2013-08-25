@@ -45,7 +45,7 @@
                   deferred.resolve(response);
 
                   // Store in local storage when status === 200
-                  if (response.status === 200) {
+                  if (!response.config.dontStoreFallback && response.status === 200) {
                     localStorage.setItem(url, JSON.stringify({
                                                 data: response.data,
                                                 status: response.status,

@@ -25,10 +25,10 @@ If the browser has no local storage support, every get() is just passed on to [$
 #### Config options
 There are two optional config options (next to all $http's normal config options): _fallback_ and _dontUserStorage_.
 
-<pre>httpWithFallback.get('/someurl.json', { fallback: { 'key': 'value' }, dontUseStorage: true });</pre>
+<pre>httpWithFallback.get('/someurl.json', { fallback: { 'key': 'value' }, dontStoreFallback: true });</pre>
 
 - *fallback*: whenever a GET request fails, and there is no stored response, the promise will resolve with this data. When everything fails and there is no fallback given, the promise will reject with the original response.
-- *dontUseStorage*: when true, don't store succesful 200 OK responses in the local storage for future fallback (default: false)
+- *dontStoreFallback*: when true, don't store succesful 200 OK responses in the local storage for future fallback (default: false)
 
 When a fallback occurs, an extra property _isFallback_ will be added to the response:
 

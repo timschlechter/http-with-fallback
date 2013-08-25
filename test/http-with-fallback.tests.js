@@ -108,7 +108,6 @@ describe("http-with-fallback", function() {
       SOME_JSON_DATA = { "key": "value" },
       SOME_HEADERS = { "header": "value"};
 
-
   describe("GET returning status 500 (Internal Server Error)", function() {
     createTestcase("",  { 
       responses: [
@@ -185,6 +184,22 @@ describe("http-with-fallback", function() {
             function(data) {
               expect(data).toEqual(SOME_HTML_DATA);
             }     
+        }
+      });
+
+      createTestcase("with dontStoreFallback in config",  {
+        config: {
+          dontStoreFallback: true
+        },
+        responses: [
+          { status: 200, data: SOME_HTML_DATA }, 
+          { status: 500, headers: SOME_HEADERS }
+        ],
+        error: {
+          "with status 500 (Internal Server Error)":
+            function(data, status) {
+              expect(status).toEqual(500);
+            }
         }
       });
     });
