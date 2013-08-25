@@ -4,6 +4,20 @@ AngularJS [$http](http://docs.angularjs.org/api/ng.$http) compatible factory whi
 ### The goal
 Always recieve status 20x on HTTP GET requests.
 
+### When you might want to use this
+When you're building an AngularJS application with offline support, like a PhoneGap app for example.
+
+### What about the browser cache?
+What about all those JSON services responding with no-caching headers?
+
+### How it works
+Whenever a GET request performed by http-with-fallback responds with:
+- status 200: the response is stored in the local storage
+- status 20x, 30x: just resolve the promise with the given response
+- status 40x, 50x: it looks for a successful response in the local storage. When found, resolve the promise with this response. If none found, and the _fallbackData_ config value is set, resolve the promise with a response containing this data.
+
+If the browser has no local storage support, every get() is just passed on to [$http](http://docs.angularjs.org/api/ng.$http).
+
 ### Usage
 #### Default usage
 <pre>httpWithFallback.get('/someurl.json')</pre>
@@ -30,19 +44,13 @@ _or_
                   // isFallback will be true when it's a fallback response
                 })</pre>
 
-### When you might want to use this
-When you're building an AngularJS application with offline support, like a PhoneGap app for example.
-
-### What about the browser cache?
-What about all those JSON services responding with no-caching headers?
-
-### How it works
-Whenever a GET request performed by http-with-fallback responds with:
-- status 200: the response is stored in the local storage
-- status 20x, 30x: just resolve the promise with the given response
-- status 40x, 50x: it looks for a successful response in the local storage. When found, resolve the promise with this response. If none found, and the _fallbackData_ config value is set, resolve the promise with a response containing this data.
-
-If the browser has no local storage support, every get() is just passed on to [$http](http://docs.angularjs.org/api/ng.$http).
+### Build
+<pre>grunt</pre>
+### Test
+_With Karma:_
+<pre>karma start --browser Chrome</pre>
+_Testrunner page:_
+<pre>http://your_checkout_location/test/</pre>
 
 ### Why?
 I got inspired by [this podcast](http://javascriptjabber.com/069-jsj-the-application-cache-with-jake-archibald/) in which [Jake Archibald](http://jakearchibald.com/) tells about the Application Cache and the problems he has with it. One thing I particularly don't like is the cache-first approach.
