@@ -5,14 +5,30 @@ AngularJS [$http](http://docs.angularjs.org/api/ng.$http) compatible factory whi
 Always recieve status 20x on HTTP GET requests.
 
 ### Usage
-Default usage:
-<pre>httpWithFallback.get('/someurl.json');</pre>
+#### Default usage
+<pre>httpWithFallback.get('/someurl.json')</pre>
 
-Config options:
-<pre>httpWithFallback.get('/someurl.json', { dontStore: true, fallbackData: { 'key': 'value' } });</pre>
+#### Config options
+There are two optional config options (next to all $http's normal config options): _fallback_ and _dontUserStorage_.
 
-- *dontStore*: when true, don't store succesful 200 OK responses in the local storage for future fallback (default: false)
-- *fallbackData*: whenever a GET request fails, and there is no stored response, the promise will resolve with this data. When everything fails and there is no fallbackData given, the promise will reject with the original response. fallbackData data will never be stored in the local storage as a future fallback response.
+<pre>httpWithFallback.get('/someurl.json', { fallback: { 'key': 'value' }, dontUseStorage: true });</pre>
+
+- *fallback*: whenever a GET request fails, and there is no stored response, the promise will resolve with this data. When everything fails and there is no fallback given, the promise will reject with the original response.
+- *dontUseStorage*: when true, don't store succesful 200 OK responses in the local storage for future fallback (default: false)
+
+When a fallback occurs, an extra property _isFallback_ will be added to the response:
+
+<pre>httpWithFallback.get('/someurl.json')
+                .then(function(response) {
+                  // response.isFallback will be true when it's a fallback response
+                })</pre>
+
+_or_
+
+<pre>httpWithFallback.get('/someurl.json')
+                .success(data, status, header, config, isFallback) {
+                  // isFallback will be true when it's a fallback response
+                })</pre>
 
 ### When you might want to use this
 When you're building an AngularJS application with offline support, like a PhoneGap app for example.
