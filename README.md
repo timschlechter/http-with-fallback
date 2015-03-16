@@ -1,4 +1,4 @@
-# $http with fallback [![Build Status](https://travis-ci.org/TimSchlechter/http-with-fallback.png?branch=master)](https://travis-ci.org/TimSchlechter/http-with-fallback)
+# $http with fallback [![Build Status](https://travis-ci.org/timschlechter/http-with-fallback.png?branch=master)](https://travis-ci.org/TimSchlechter/http-with-fallback)
 AngularJS [$http](http://docs.angularjs.org/api/ng.$http) compatible factory which can provide a fallback for failing GET requests.
 
 ### The goal
